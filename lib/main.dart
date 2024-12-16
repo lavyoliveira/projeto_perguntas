@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import './questao.dart';
+import './resposta.dart';
 
 main() {
   runApp(PerguntaApp());
 }
 
 class PerguntaApp extends StatefulWidget {
-
   @override
   State<PerguntaApp> createState() => _PerguntaAppState();
 }
@@ -14,17 +14,32 @@ class PerguntaApp extends StatefulWidget {
 class _PerguntaAppState extends State<PerguntaApp> {
   var perguntaSelecionada = 0;
 
-  void responder(){
+  void responder() {
     setState(() => perguntaSelecionada++);
     print(perguntaSelecionada);
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<String> perguntas = [
-      'Qual é a sua cor favorita?',
-      'Qual é o seu animal favorito?'
+    final List<Map<String, Object>> perguntas = [
+      {
+        'texto': 'Qual é sua fruta preferida?',
+        'respostas': ['Maçã', 'Laranja', 'Manga', 'Acerola']
+      },
+      {
+        'texto': 'Qual é seu animal preferido?',
+        'respostas': ['Leão', 'Cachorro', 'Gato', 'Cavalo']
+      },
+      {
+        'texto': 'Qual é sua cor preferida?',
+        'respostas': ['Rosa', 'Azul', 'Preto', 'Vermelho']
+      }
     ];
+
+    List<String> respostas =
+        perguntas[perguntaSelecionada]['respostas'] as List<String>? ?? [];
+    List<Widget> widgets =
+        respostas.map((t) => Resposta(t, responder)).toList();
 
     return MaterialApp(
       home: Scaffold(
@@ -35,19 +50,8 @@ class _PerguntaAppState extends State<PerguntaApp> {
         ),
         body: Column(
           children: [
-            Questao(perguntas[perguntaSelecionada]),
-            ElevatedButton(
-              child: Text('Resposta 1'),
-              onPressed: responder
-            ),
-            ElevatedButton(
-              child: Text('Resposta 1'),
-              onPressed: responder
-            ),
-            ElevatedButton(
-              child: Text('Resposta 1'),
-              onPressed: responder
-            )
+            Questao(perguntas[perguntaSelecionada]['texto'].toString()),
+            ...widgets
           ],
         ),
       ),
