@@ -13,31 +13,36 @@ class PerguntaApp extends StatefulWidget {
 
 class _PerguntaAppState extends State<PerguntaApp> {
   var perguntaSelecionada = 0;
+  final List<Map<String, Object>> perguntas = [
+    {
+      'texto': 'Qual é sua fruta preferida?',
+      'respostas': ['Maçã', 'Laranja', 'Manga', 'Acerola']
+    },
+    {
+      'texto': 'Qual é seu animal preferido?',
+      'respostas': ['Leão', 'Cachorro', 'Gato', 'Cavalo']
+    },
+    {
+      'texto': 'Qual é sua cor preferida?',
+      'respostas': ['Rosa', 'Azul', 'Preto', 'Vermelho']
+    }
+  ];
 
   void responder() {
-    setState(() => perguntaSelecionada++);
-    print(perguntaSelecionada);
+    if (temPerguntaSelecionada) {
+      setState(() => perguntaSelecionada++);
+    }
+  }
+
+  bool get temPerguntaSelecionada {
+    return perguntaSelecionada < perguntas.length;
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, Object>> perguntas = [
-      {
-        'texto': 'Qual é sua fruta preferida?',
-        'respostas': ['Maçã', 'Laranja', 'Manga', 'Acerola']
-      },
-      {
-        'texto': 'Qual é seu animal preferido?',
-        'respostas': ['Leão', 'Cachorro', 'Gato', 'Cavalo']
-      },
-      {
-        'texto': 'Qual é sua cor preferida?',
-        'respostas': ['Rosa', 'Azul', 'Preto', 'Vermelho']
-      }
-    ];
-
-    List<String> respostas =
-        perguntas[perguntaSelecionada]['respostas'] as List<String>? ?? [];
+    List<String> respostas = temPerguntaSelecionada
+        ? (perguntas[perguntaSelecionada]['respostas'] as List<String>)
+        : [];
     List<Widget> widgets =
         respostas.map((t) => Resposta(t, responder)).toList();
 
@@ -48,12 +53,16 @@ class _PerguntaAppState extends State<PerguntaApp> {
           backgroundColor: const Color.fromARGB(255, 7, 23, 37),
           centerTitle: true,
         ),
-        body: Column(
-          children: [
-            Questao(perguntas[perguntaSelecionada]['texto'].toString()),
-            ...widgets
-          ],
-        ),
+        body: temPerguntaSelecionada
+            ? Column(
+                children: [
+                  Questao(perguntas[perguntaSelecionada]['texto'].toString()),
+                  ...widgets
+                ],
+              )
+            : Center(
+                child: Text('Parabéns!', style: TextStyle(fontSize: 20),),
+              ),
       ),
     );
   }
